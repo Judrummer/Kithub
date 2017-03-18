@@ -10,6 +10,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import rx.Observable
@@ -47,68 +48,72 @@ class RepoListViewModelTest : Spek({
 
         val SEARCH_REPOS_RESPONSE =
                 listOf(RepoEntity(id = "1", name = "repo1"))
+        on("trigger refresh and empty search") {
+            it("getRepos correct") {
+                RepoListViewIntentTester {
+                    viewModel.attachView()
+                    //prepare subscription
+                    val reposSubscriber = TestSubscriber<List<RepoListContract.RepoItem>>()
+                    val loadingSubscriber = TestSubscriber<Boolean>()
+                    val errorSubscriber = TestSubscriber<Exception>()
 
-        it("trigger refresh and empty search must getRepos correct") {
-            RepoListViewIntentTester {
-                viewModel.attachView()
-                //prepare subscription
-                val reposSubscriber = TestSubscriber<List<RepoListContract.RepoItem>>()
-                val loadingSubscriber = TestSubscriber<Boolean>()
-                val errorSubscriber = TestSubscriber<Exception>()
+                    viewModel.repos.subscribe(reposSubscriber).addTo(subscriptions)
+                    viewModel.loading.subscribe(loadingSubscriber).addTo(subscriptions)
+                    viewModel.error.subscribe(errorSubscriber).addTo(subscriptions)
 
-                viewModel.repos.subscribe(reposSubscriber).addTo(subscriptions)
-                viewModel.loading.subscribe(loadingSubscriber).addTo(subscriptions)
-                viewModel.error.subscribe(errorSubscriber).addTo(subscriptions)
+                    refreshIntent.onNext(Unit)
+                    searchIntent.onNext("")
+                    getReposSubject.onNext(Result.of(GET_REPOS_RESPONSE))
 
-                refreshIntent.onNext(Unit)
-                searchIntent.onNext("")
-                getReposSubject.onNext(Result.of(GET_REPOS_RESPONSE))
+                    assertEquals(reposSubscriber.onNextEvents, listOf(
+                            listOf(
+                                    RepoListContract.RepoItem(id = "1", name = "repo1"),
+                                    RepoListContract.RepoItem(id = "2", name = "repo2")
+                            )
+                    ))
 
-                assertEquals(reposSubscriber.onNextEvents, listOf(
-                        listOf(
-                                RepoListContract.RepoItem(id = "1", name = "repo1"),
-                                RepoListContract.RepoItem(id = "2", name = "repo2")
-                        )
-                ))
+                    assertEquals(loadingSubscriber.onNextEvents, listOf(true, false))
 
-                assertEquals(loadingSubscriber.onNextEvents, listOf(true, false))
+                    assertEquals(errorSubscriber.onNextEvents, listOf<Exception>())
 
-                assertEquals(errorSubscriber.onNextEvents, listOf<Exception>())
-
-                viewModel.detachView()
-                subscriptions.clear()
+                    viewModel.detachView()
+                    subscriptions.clear()
+                }
             }
         }
 
-        it("trigger refresh and text search must searchRepos correct") {
-            RepoListViewIntentTester {
-                viewModel.attachView()
-                //prepare subscription
-                val reposSubscriber = TestSubscriber<List<RepoListContract.RepoItem>>()
-                val loadingSubscriber = TestSubscriber<Boolean>()
-                val errorSubscriber = TestSubscriber<Exception>()
+        on("trigger refresh and text search") {
+            it("searchRepos correct") {
+                RepoListViewIntentTester {
+                    viewModel.attachView()
+                    //prepare subscription
+                    val reposSubscriber = TestSubscriber<List<RepoListContract.RepoItem>>()
+                    val loadingSubscriber = TestSubscriber<Boolean>()
+                    val errorSubscriber = TestSubscriber<Exception>()
 
-                viewModel.repos.subscribe(reposSubscriber).addTo(subscriptions)
-                viewModel.loading.subscribe(loadingSubscriber).addTo(subscriptions)
-                viewModel.error.subscribe(errorSubscriber).addTo(subscriptions)
+                    viewModel.repos.subscribe(reposSubscriber).addTo(subscriptions)
+                    viewModel.loading.subscribe(loadingSubscriber).addTo(subscriptions)
+                    viewModel.error.subscribe(errorSubscriber).addTo(subscriptions)
 
-                refreshIntent.onNext(Unit)
-                searchIntent.onNext("query")
-                searchReposSubject.onNext(Result.of(SEARCH_REPOS_RESPONSE))
+                    refreshIntent.onNext(Unit)
+                    searchIntent.onNext("query")
+                    searchReposSubject.onNext(Result.of(SEARCH_REPOS_RESPONSE))
 
-                assertEquals(reposSubscriber.onNextEvents, listOf(
-                        listOf(
-                                RepoListContract.RepoItem(id = "1", name = "repo1")
-                        )
-                ))
+                    assertEquals(reposSubscriber.onNextEvents, listOf(
+                            listOf(
+                                    RepoListContract.RepoItem(id = "1", name = "repo1")
+                            )
+                    ))
 
-                assertEquals(loadingSubscriber.onNextEvents, listOf(true, false))
+                    assertEquals(loadingSubscriber.onNextEvents, listOf(true, false))
 
-                assertEquals(errorSubscriber.onNextEvents, listOf<Exception>())
+                    assertEquals(errorSubscriber.onNextEvents, listOf<Exception>())
 
-                viewModel.detachView()
-                subscriptions.clear()
+                    viewModel.detachView()
+                    subscriptions.clear()
+                }
             }
         }
+
     }
 })
