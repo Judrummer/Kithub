@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.taskworld.kxandroid.unSafeLazy
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subscriptions.CompositeSubscription
 
 abstract class BaseFragment : Fragment() {
 
@@ -27,6 +28,7 @@ abstract class BaseFragment : Fragment() {
     abstract val contentLayoutResourceId: Int
     private val lifecycleSubject = BehaviorSubject.create<LifecycleEvent>()
     val rootView by lazy(LazyThreadSafetyMode.NONE) { view!! }
+
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -73,7 +75,6 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        lifecycleSubject.onNext(LifecycleEvent.DESTROY)
         super.onDestroy()
     }
 

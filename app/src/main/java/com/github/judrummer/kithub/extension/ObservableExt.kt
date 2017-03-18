@@ -1,9 +1,10 @@
-package com.ezkae.common.extension
+package com.github.judrummer.kithub.extension
 
 import com.github.kittinunf.result.Result
 import rx.Observable
 import rx.Observer
 import rx.Subscription
+import rx.subjects.Subject
 
 fun <T> Observable<T?>.filterNotNull() = filter { it != null }.map { it!! }
 
@@ -16,6 +17,7 @@ fun <V : Any, E : Exception, V2 : Any, E2 : Exception, O2 : Observable<Result<V2
 
 fun <T : Any> Observable<T>.mapResult() = map { Result.of(it) }.onErrorReturn { Result.error(it as Exception) }
 
+fun <T : Any> Observable<T>.bindSubject(subject: Subject<T, T>) = subscribe { subject.onNext(it) }
 
 fun <T : R, R, X> Observable<T>.rx_bindNext(next: (R) -> X): Subscription {
     return subscribe(object : Observer<T> {
@@ -31,7 +33,6 @@ fun <T : R, R, X> Observable<T>.rx_bindNext(next: (R) -> X): Subscription {
     })
 }
 
-
 fun <T, X> Observable<T>.rx_bindNext(next: () -> X): Subscription {
     return subscribe(object : Observer<T> {
         override fun onNext(t: T) {
@@ -45,3 +46,7 @@ fun <T, X> Observable<T>.rx_bindNext(next: () -> X): Subscription {
         }
     })
 }
+
+fun <T : Any> Observable<T>.share(block: Observable<T>.() -> Unit) = share().apply {
+    block()
+}!!
