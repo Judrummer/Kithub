@@ -20,6 +20,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
 }
 
 dependencies {
@@ -53,8 +59,10 @@ dependencies {
             "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
             "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
             "com.nhaarman:mockito-kotlin:0.3.1",
-            "org.hamcrest:hamcrest-all:1.3",
-            "org.jetbrains.spek:spek:1.0.25"
+            "com.natpryce:hamkrest:1.2.3.0",
+            "org.jetbrains.spek:spek-api:1.0.89",
+            "org.jetbrains.spek:spek-junit-platform-engine:1.0.89",
+            "org.junit.platform:junit-platform-runner:1.0.0-M2"
     )
 
     androidTestCompile(
@@ -75,7 +83,6 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        maven { url  "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
 
     dependencies {

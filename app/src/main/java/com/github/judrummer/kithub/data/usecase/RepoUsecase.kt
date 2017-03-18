@@ -1,5 +1,6 @@
 package com.github.judrummer.kithub.data.usecase
 
+import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.extension.mapResult
 import com.github.judrummer.kithub.extension.rx_gson
 import com.github.kittinunf.fuel.httpGet
@@ -13,11 +14,6 @@ import rx.Observable
 typealias  GetRepos = () -> (Observable<Result<List<RepoEntity>, Exception>>)
 typealias  SearchRepos = (String) -> (Observable<Result<List<RepoEntity>, Exception>>)
 
-data class RepoEntity(val id: String,
-                      val name: String,
-                      val description: String?,
-                      val full_name: String,
-                      val stargazers_count: Int)
 
 data class SearchReposApiResponse(val items: List<RepoEntity>)
 

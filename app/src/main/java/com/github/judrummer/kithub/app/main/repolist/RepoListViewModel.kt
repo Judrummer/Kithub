@@ -1,14 +1,14 @@
 package com.github.judrummer.kithub.app.main.repolist
 
+import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.data.usecase.*
 import com.github.judrummer.kithub.extension.bindSubject
 import com.github.judrummer.kithub.extension.filterResultFailure
 import com.github.judrummer.kithub.extension.filterResultSuccess
 import com.github.judrummer.kithub.extension.share
 import com.github.kittinunf.reactiveandroid.rx.addTo
-import com.taskworld.kxandroid.logD
 import rx.Observable
-import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 class RepoListViewModel(
         private val viewIntent: RepoListContract.ViewIntent,
@@ -16,16 +16,13 @@ class RepoListViewModel(
         private val searchRepos: SearchRepos = SearchReposImpl
 ) : RepoListContract.ViewModel {
 
-    override val repoes = BehaviorSubject.create<List<RepoListContract.RepoItem>>()
-    override val loading = BehaviorSubject.create<Boolean>()
-    override val error = BehaviorSubject.create<Exception>()
+    override val repos = PublishSubject.create<List<RepoListContract.RepoItem>>()!!
+    override val loading = PublishSubject.create<Boolean>()!!
+    override val error = PublishSubject.create<Exception>()!!
 
     override fun attachView() {
         Observable.combineLatest(viewIntent.refreshIntent, viewIntent.searchIntent) { _, search -> search }
-                .doOnNext {
-                    logD("loading true")
-                    loading.onNext(true)
-                }
+                .doOnNext { loading.onNext(true) }
                 .switchMap { search ->
                     if (search.isNotBlank()) {
                         searchRepos(search)
@@ -33,14 +30,11 @@ class RepoListViewModel(
                         getRepos()
                     }
                 }
-                .doOnNext {
-                    logD("loading false")
-                    loading.onNext(false)
-                }
+                .doOnNext { loading.onNext(false) }
                 .share {
                     filterResultSuccess()
                             .map { it.map(::mapRepoToRepoItem) }
-                            .bindSubject(repoes)
+                            .bindSubject(repos)
                             .addTo(viewIntent.subscriptions)
 
                     filterResultFailure()

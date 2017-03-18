@@ -36,18 +36,17 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        logD("Attach View")
         viewModel.attachView()
         srlRepoList.setOnRefreshListener { refreshIntent.onNext(Unit) }
         rvRepoList.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            rx_jxAdapter(viewModel.repoes.map { it as List<Any> },
-                    JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { position, item ->
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rx_jxAdapter(viewModel.repos.map { it as List<Any> },
+                    JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, (id, name, description, starCount) ->
                         itemView.apply {
-                            tvItemId.text = item.id
-                            tvItemName.text = item.name
+                            tvItemStar.text = starCount.toString()
+                            tvItemName.text = name
                             setOnClickListener {
-                                toast("Click Repo ${item.name}")
+                                toast("Click Repo[$id] -> $name $description")
                             }
                         }
                     }).addTo(subscriptions)
@@ -62,7 +61,6 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
         }.addTo(subscriptions)
 
         if (savedInstanceState == null) {
-            logD("refresh trigger")
             refreshIntent.onNext(Unit)
             searchIntent.onNext("")
         }
@@ -71,6 +69,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
     override fun onDestroyView() {
         super.onDestroyView()
         subscriptions.clear()
+        viewModel.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
