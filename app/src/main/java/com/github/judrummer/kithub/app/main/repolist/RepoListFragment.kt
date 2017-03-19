@@ -60,10 +60,10 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
             toast("Error ${it.message ?: ""}")
         }.addTo(subscriptions)
 
-        if (savedInstanceState == null) {
-            refreshIntent.onNext(Unit)
-            searchIntent.onNext("")
-        }
+
+        refreshIntent.onNext(Unit)
+        searchIntent.onNext("")
+        
     }
 
     override fun onDestroyView() {
@@ -71,12 +71,6 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
         subscriptions.clear()
         viewModel.detachView()
     }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putBoolean("rotate", true)
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_search, menu)
