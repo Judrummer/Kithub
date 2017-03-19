@@ -23,12 +23,13 @@ allprojects {
         espressoVersion = '2.2.2'
         fuelVersion = "1.3.1"
         jxAdapterVersion = "0.3.2"
+        spekVersion = "1.1.0-beta4" // 1.0.89
 
     }
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "http://repository.jetbrains.com/all" }
+        maven { url "http://dl.bintray.com/jetbrains/spek" } //"http://repository.jetbrains.com/all"
     }
 }
 

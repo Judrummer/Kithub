@@ -60,9 +60,9 @@ dependencies {
             "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
             "com.nhaarman:mockito-kotlin:0.3.1",
             "com.natpryce:hamkrest:1.2.3.0",
-            "org.jetbrains.spek:spek-api:1.0.89",
-            "org.jetbrains.spek:spek-junit-platform-engine:1.0.89",
-            "org.junit.platform:junit-platform-runner:1.0.0-M2"
+            "org.jetbrains.spek:spek-api:$spekVersion",
+            "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion",
+            "org.junit.platform:junit-platform-runner:1.0.0-M3"
     )
 
     androidTestCompile(
