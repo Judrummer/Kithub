@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -62,7 +63,7 @@ dependencies {
             "com.natpryce:hamkrest:1.2.3.0",
             "org.jetbrains.spek:spek-api:$spekVersion",
             "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion",
-            "org.junit.platform:junit-platform-runner:1.0.0-M3"
+            "org.junit.platform:junit-platform-runner:$junitRunnerVersion"
     )
 
     androidTestCompile(
@@ -91,3 +92,5 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
+
+
