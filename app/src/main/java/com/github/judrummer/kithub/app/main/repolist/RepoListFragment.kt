@@ -29,8 +29,8 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
     override val contentLayoutResourceId: Int = R.layout.fragment_repo_list
     override val searchIntent = PublishSubject.create<String>()!!
     override val refreshIntent = PublishSubject.create<Unit>()!!
-    override val subscriptions = CompositeSubscription()
 
+    val subscriptions = CompositeSubscription()
     val viewModel: RepoListContract.ViewModel by lazy { RepoListViewModel(this) }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
         viewModel.attachView()
         srlRepoList.setOnRefreshListener { refreshIntent.onNext(Unit) }
         rvRepoList.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context)
             rx_jxAdapter(viewModel.repos.map { it as List<Any> },
                     JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, (id, name, description, starCount) ->
                         itemView.apply {
@@ -52,18 +52,18 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
                     }).addTo(subscriptions)
         }
 
-        viewModel.loading.subscribe {
-            srlRepoList.isRefreshing = it
-        }.addTo(subscriptions)
+        viewModel.loading
+                .subscribe(srlRepoList::setRefreshing)
+                .addTo(subscriptions)
 
-        viewModel.error.subscribe {
-            toast("Error ${it.message ?: ""}")
-        }.addTo(subscriptions)
+        viewModel.error.map { "Error ${it.message ?: ""}" }
+                .subscribe(this::toast)
+                .addTo(subscriptions)
 
 
         refreshIntent.onNext(Unit)
         searchIntent.onNext("")
-        
+
     }
 
     override fun onDestroyView() {

@@ -9,6 +9,7 @@ import com.github.judrummer.kithub.extension.share
 import com.github.kittinunf.reactiveandroid.rx.addTo
 import rx.Observable
 import rx.subjects.PublishSubject
+import rx.subscriptions.CompositeSubscription
 
 class RepoListViewModel(
         private val viewIntent: RepoListContract.ViewIntent,
@@ -19,7 +20,7 @@ class RepoListViewModel(
     override val repos = PublishSubject.create<List<RepoListContract.RepoItem>>()!!
     override val loading = PublishSubject.create<Boolean>()!!
     override val error = PublishSubject.create<Exception>()!!
-
+    private val subscriptions = CompositeSubscription()
     override fun attachView() {
         Observable.combineLatest(viewIntent.refreshIntent, viewIntent.searchIntent) { _, search -> search }
                 .doOnNext { loading.onNext(true) }
@@ -32,20 +33,20 @@ class RepoListViewModel(
                 }
                 .doOnNext { loading.onNext(false) }
                 .share {
-                    filterResultSuccess()
+                     filterResultSuccess()
                             .map { it.map(::mapRepoToRepoItem) }
                             .bindSubject(repos)
-                            .addTo(viewIntent.subscriptions)
+                            .addTo(subscriptions)
 
                     filterResultFailure()
                             .bindSubject(error)
-                            .addTo(viewIntent.subscriptions)
+                            .addTo(subscriptions)
                 }
 
     }
 
     override fun detachView() {
-
+        subscriptions.clear()
     }
 
 }

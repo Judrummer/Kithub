@@ -15,19 +15,16 @@ class RepoListViewIntentRobot : RepoListContract.ViewIntent {
 
     override val refreshIntent = PublishSubject.create<Unit>()
     override val searchIntent = PublishSubject.create<String>()
-    override val subscriptions = CompositeSubscription()
+    val subscriptions = CompositeSubscription()
 
     val getReposSubject = PublishSubject.create<Result<List<RepoEntity>, Exception>>()!!
     val searchReposSubject = PublishSubject.create<Result<List<RepoEntity>, Exception>>()!!
 
-    val viewModel = RepoListViewModel(this,
-            getRepos = { getReposSubject },
-            searchRepos = { searchReposSubject })
+    val viewModel by lazy { RepoListViewModel(this, getRepos = { getReposSubject }, searchRepos = { searchReposSubject }) }
 
     val reposSubscriber = TestSubscriber<List<RepoListContract.RepoItem>>()
     val loadingSubscriber = TestSubscriber<Boolean>()
     val errorSubscriber = TestSubscriber<Exception>()
-
 
     fun run(testBlock: RepoListViewIntentRobot.() -> (Unit)) {
         viewModel.attachView()
@@ -38,4 +35,5 @@ class RepoListViewIntentRobot : RepoListContract.ViewIntent {
         viewModel.detachView()
         subscriptions.clear()
     }
+
 }

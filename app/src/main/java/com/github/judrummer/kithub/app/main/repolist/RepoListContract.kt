@@ -10,7 +10,6 @@ interface RepoListContract {
     interface ViewIntent {
         val refreshIntent: Observable<Unit>
         val searchIntent: Observable<String>
-        val subscriptions: CompositeSubscription
     }
 
     interface ViewModel : BaseViewModel {
