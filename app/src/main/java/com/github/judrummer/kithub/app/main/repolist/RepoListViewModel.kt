@@ -25,8 +25,13 @@ class RepoListViewModel(
     override val showError = PublishSubject.create<Exception>()!!
     private val subscriptions = CompositeDisposable()
     override fun attachView() {
+        println("attachView")
         viewIntent.refreshIntent
-                .switchMap { getRepos() }
+                .doOnNext { println("trigeer") }
+                .switchMap {
+                    println("map")
+                    getRepos()
+                }
                 .map { stateProps.copy(loading = false, repos = it.map(this::mapRepoToRepoItem)) }
                 .startWith { stateProps.copy(loading = true) }
                 .onErrorReturn {

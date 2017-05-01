@@ -20,6 +20,7 @@ import java.lang.Exception
 class RepoListViewModelSpec : Spek({
 
     describe("RepoListViewModel") {
+        println("Start Test")
         var viewIntentRobot = RepoListViewIntentRobot()
         val GET_REPOS_RESPONSE = listOf(RepoEntity(id = "1", name = "repo1"),
                 RepoEntity(id = "2", name = "repo2"))
@@ -32,14 +33,15 @@ class RepoListViewModelSpec : Spek({
 
         on("refresh ") {
             viewIntentRobot.run {
-                val stateSubscriber = viewModel.state.test()
-                val errorSubscriber = viewModel.showError.test()
+//                val stateSubscriber = viewModel.state.test()
+//                val errorSubscriber = viewModel.showError.test()
                 viewModel.state.subscribe {
                     println("StateChange $it")
                 }.addTo(subscriptions)
                 refreshIntent.onNext(Unit)
                 getReposSubject.onNext(GET_REPOS_RESPONSE)
-                it("get correct state") {
+                it("get correct state sequence") {
+//                    println("Value state ${stateSubscriber.values()}")
                     val expectedRepos = listOf(
                             RepoListContract.RepoItem(id = "1", name = "repo1"),
                             RepoListContract.RepoItem(id = "2", name = "repo2")
@@ -47,11 +49,12 @@ class RepoListViewModelSpec : Spek({
                     val expectedState1 = RepoListContract.State()
                     val expectedState2 = expectedState1.copy(loading = true)
                     val expectedState3 = expectedState2.copy(loading = false, repos = expectedRepos)
-                    stateSubscriber.assertResult(expectedState1, expectedState2, expectedState3)
+
+                    stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
                 }
 
                 it("not contain any error") {
-                    errorSubscriber.assertResult(Exception(""))
+                    showErrorObserver.assertEmpty()
                 }
 
             }
