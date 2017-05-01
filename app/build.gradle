@@ -40,18 +40,13 @@ dependencies {
             "com.github.taskworld.kxandroid:kxandroid-support-v4:$kxandroidVersion",
             "com.github.taskworld.kxandroid:kxandroid-support-v7-appcompat:$kxandroidVersion",
             "com.github.taskworld.kxandroid:kxandroid-support-design:$kxandroidVersion",
-            "com.github.kittinunf.reactiveandroid:reactiveandroid-ui:$reactiveAndroidVersion",
-            "com.github.kittinunf.reactiveandroid:reactiveandroid-appcompat-v7:$reactiveAndroidVersion",
-            "com.github.kittinunf.reactiveandroid:reactiveandroid-support-v4:$reactiveAndroidVersion",
-            "com.github.kittinunf.reactiveandroid:reactiveandroid-design:$reactiveAndroidVersion",
             "com.github.bumptech.glide:glide:3.6.1",
             "com.github.verachadw:kreference:0.7.0",
             'com.google.code.gson:gson:2.4',
             "com.github.kittinunf.result:result:1.0.2",
             "com.github.kittinunf.fuel:fuel-android:$fuelVersion",
-            "com.github.kittinunf.fuel:fuel-rxjava:$fuelVersion",
             "com.github.judrummer.jxadapter:jxadapter:$jxAdapterVersion",
-            "com.github.judrummer.jxadapter:jxadapter-rxjava:$jxAdapterVersion"
+            "io.reactivex.rxjava2:rxjava:2.0.9"
     )
 
     compile fileTree(dir: 'libs', include: ['*.jar'])

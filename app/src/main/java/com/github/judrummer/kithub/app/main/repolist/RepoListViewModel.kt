@@ -3,48 +3,46 @@ package com.github.judrummer.kithub.app.main.repolist
 import com.github.judrummer.jxadapter.JxItem
 import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.data.usecase.*
-import com.github.judrummer.kithub.extension.bindSubject
-import com.github.judrummer.kithub.extension.filterResultFailure
-import com.github.judrummer.kithub.extension.filterResultSuccess
-import com.github.judrummer.kithub.extension.share
-import com.github.kittinunf.reactiveandroid.rx.addTo
-import rx.Observable
-import rx.subjects.PublishSubject
-import rx.subscriptions.CompositeSubscription
+import com.github.judrummer.kithub.extension.*
+import com.taskworld.kxandroid.logD
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.subjects.PublishSubject
+import kotlin.properties.Delegates
+
 
 class RepoListViewModel(
         private val viewIntent: RepoListContract.ViewIntent,
-        private val getRepos: GetRepos = GetReposImpl,
-        private val searchRepos: SearchRepos = SearchReposImpl
+        private val getRepos: GetRepos = GetReposImpl
 ) : RepoListContract.ViewModel {
 
-    override val repos = PublishSubject.create<List<RepoListContract.RepoItem>>()!!
-    override val loading = PublishSubject.create<Boolean>()!!
-    override val error = PublishSubject.create<Exception>()!!
-    private val subscriptions = CompositeSubscription()
-    override fun attachView() {
-        Observable.combineLatest(viewIntent.refreshIntent, viewIntent.searchIntent) { _, search -> search }
-                .doOnNext { loading.onNext(true) }
-                .switchMap { search ->
-                    if (search.isNotBlank()) {
-                        searchRepos(search)
-                    } else {
-                        getRepos()
-                    }
-                }
-                .doOnNext { loading.onNext(false) }
-                .share {
-                    filterResultSuccess()
-                            .map { it.map(::mapRepoToRepoItem) }
-                            .subscribe(repos::onNext)
-                            .addTo(subscriptions)
+    private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, new, _ ->
+        state.onNext(new)
+    }
 
-                    filterResultFailure()
-                            .subscribe(error::onNext)
-                            .addTo(subscriptions)
+    override val state = PublishSubject.create<RepoListContract.State>()
+    override val showError = PublishSubject.create<Exception>()!!
+    private val subscriptions = CompositeDisposable()
+    override fun attachView() {
+        viewIntent.refreshIntent
+                .switchMap { getRepos() }
+                .map { stateProps.copy(loading = false, repos = it.map(this::mapRepoToRepoItem)) }
+                .startWith { stateProps.copy(loading = true) }
+                .onErrorReturn {
+                    showError.onNext(it as Exception)
+                    stateProps.copy(loading = false)
                 }
+                .subscribe {
+                    stateProps = it
+                }.addTo(subscriptions)
 
     }
+
+    private fun mapRepoToRepoItem(repo: RepoEntity) = RepoListContract.RepoItem(repo.id,
+            repo.name,
+            repo.description ?: "",
+            repo.stargazers_count)
 
     override fun detachView() {
         subscriptions.clear()
@@ -52,7 +50,3 @@ class RepoListViewModel(
 
 }
 
-fun mapRepoToRepoItem(repo: RepoEntity) = RepoListContract.RepoItem(repo.id,
-        repo.name,
-        repo.description ?: "",
-        repo.stargazers_count)
