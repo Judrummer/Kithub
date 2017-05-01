@@ -22,7 +22,7 @@ allprojects {
         supportTestVersion = '0.5'
         espressoVersion = '2.2.2'
         fuelVersion = "1.3.1"
-        jxAdapterVersion = "0.3.2"
+        jxAdapterVersion = "0.4.0"
         spekVersion = "1.1.0-beta4"//"1.1.19" // 1.0.89
         junitRunnerVersion ="1.0.0-M3"
 

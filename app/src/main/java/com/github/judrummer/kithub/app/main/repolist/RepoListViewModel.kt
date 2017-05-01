@@ -1,5 +1,6 @@
 package com.github.judrummer.kithub.app.main.repolist
 
+import com.github.judrummer.jxadapter.JxItem
 import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.data.usecase.*
 import com.github.judrummer.kithub.extension.bindSubject
@@ -33,13 +34,13 @@ class RepoListViewModel(
                 }
                 .doOnNext { loading.onNext(false) }
                 .share {
-                     filterResultSuccess()
+                    filterResultSuccess()
                             .map { it.map(::mapRepoToRepoItem) }
-                            .bindSubject(repos)
+                            .subscribe(repos::onNext)
                             .addTo(subscriptions)
 
                     filterResultFailure()
-                            .bindSubject(error)
+                            .subscribe(error::onNext)
                             .addTo(subscriptions)
                 }
 

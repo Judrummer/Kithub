@@ -1,5 +1,6 @@
 package com.github.judrummer.kithub.app.main.repolist
 
+import com.github.judrummer.jxadapter.JxItem
 import com.github.judrummer.kithub.base.BaseViewModel
 import rx.Observable
 import rx.Subscription
@@ -18,7 +19,7 @@ interface RepoListContract {
         val error: Observable<Exception>
     }
 
-    data class RepoItem(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0)
+    data class RepoItem(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0) : JxItem
 
 }
 

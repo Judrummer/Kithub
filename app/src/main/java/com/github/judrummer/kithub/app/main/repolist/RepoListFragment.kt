@@ -9,6 +9,7 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import com.github.judrummer.jxadapter.JxItem
 import com.github.judrummer.jxadapter.JxViewHolder
 import com.github.judrummer.jxadapter_rxjava.rx_jxAdapter
 import com.github.judrummer.kithub.R
@@ -40,7 +41,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
         srlRepoList.setOnRefreshListener { refreshIntent.onNext(Unit) }
         rvRepoList.apply {
             layoutManager = LinearLayoutManager(context)
-            rx_jxAdapter(viewModel.repos.map { it as List<Any> },
+            rx_jxAdapter(viewModel.repos.map { it as List<JxItem> },
                     JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, (id, name, description, starCount) ->
                         itemView.apply {
                             tvItemStar.text = starCount.toString()
