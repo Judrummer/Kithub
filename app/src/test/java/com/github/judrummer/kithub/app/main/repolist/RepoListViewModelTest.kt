@@ -26,32 +26,28 @@ class RepoListViewModelTest {
 
     @Test
     fun refresh() {
-        val repo = Observable.just(listOf(
-                                    RepoListContract.RepoItem(id = "1", name = "repo1"),
+        viewIntentRobot.run {
+            println("Run Test")
+            viewModel.state.subscribe {
+                println("CurrentState $it")
+            }
+            println("AfterSubscribe")
+            refreshIntent.onNext(Unit)
+            println("Refresh")
+            getReposSubject.onNext(GET_REPOS_RESPONSE)
+            println("APIREPO")
+            val expectedRepos = listOf(
+                    RepoListContract.RepoItem(id = "1", name = "repo1"),
                     RepoListContract.RepoItem(id = "2", name = "repo2")
-            ))
-        val testRepo = repo.test()
-        println(testRepo.values())
-//        viewIntentRobot.run {
-//            //                val stateSubscriber = viewModel.state.test()
-////                val errorSubscriber = viewModel.showError.test()
-//            refreshIntent.onNext(Unit)
-//            getReposSubject.onNext(GET_REPOS_RESPONSE)
-//            val expectedRepos = listOf(
-//                    RepoListContract.RepoItem(id = "1", name = "repo1"),
-//                    RepoListContract.RepoItem(id = "2", name = "repo2")
-//            )
-//            val expectedState1 = RepoListContract.State()
-//            val expectedState2 = expectedState1.copy(loading = true)
-//            val expectedState3 = expectedState2.copy(loading = false, repos = expectedRepos)
-//
-//            println("Value ${stateObserver.values()}")
-//
-//            stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
-//
-//            showErrorObserver.assertEmpty()
-//
-//
-//        }
+            )
+            val expectedState1 = RepoListContract.State()
+            val expectedState2 = expectedState1.copy(loading = true)
+            val expectedState3 = expectedState2.copy(loading = false, repos = expectedRepos)
+            println("Value ${stateObserver.values().size} ${stateObserver.values()}")
+            stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
+            showErrorObserver.assertEmpty()
+        }
     }
+
+
 }

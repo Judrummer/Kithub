@@ -8,6 +8,7 @@ import com.taskworld.kxandroid.logD
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.properties.Delegates
 
@@ -17,26 +18,30 @@ class RepoListViewModel(
         private val getRepos: GetRepos = GetReposImpl
 ) : RepoListContract.ViewModel {
 
-    private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, new, _ ->
+    private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, _, new ->
         state.onNext(new)
     }
 
-    override val state = PublishSubject.create<RepoListContract.State>()
-    override val showError = PublishSubject.create<Exception>()!!
+    override val state = BehaviorSubject.create<RepoListContract.State>()
+    override val showError = BehaviorSubject.create<Exception>()!!
     private val subscriptions = CompositeDisposable()
+
+    init {
+        state.onNext(stateProps)
+    }
+
     override fun attachView() {
-        println("attachView")
+        println("VM attachView")
         viewIntent.refreshIntent
-                .doOnNext { println("trigeer") }
                 .switchMap {
-                    println("map")
                     getRepos()
-                }
-                .map { stateProps.copy(loading = false, repos = it.map(this::mapRepoToRepoItem)) }
-                .startWith { stateProps.copy(loading = true) }
-                .onErrorReturn {
-                    showError.onNext(it as Exception)
-                    stateProps.copy(loading = false)
+                            .map { stateProps.copy(loading = false, repos = it.map(this::mapRepoToRepoItem)) }
+                            .onErrorReturn {
+                                println("On Error ${it.message ?: ""}")
+                                showError.onNext(it as Exception)
+                                stateProps.copy(loading = false, error = it)
+                            }
+                            .startWith(stateProps.copy(loading = true, error = null))
                 }
                 .subscribe {
                     stateProps = it
