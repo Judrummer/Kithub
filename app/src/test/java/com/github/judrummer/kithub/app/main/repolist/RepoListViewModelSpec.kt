@@ -17,7 +17,7 @@ import java.lang.Exception
  * Created by judrummer on 19/3/2560.
  */
 
-class RepoListViewModelSpec : Spek({
+object RepoListViewModelSpec : Spek({
 
     describe("RepoListViewModel") {
         println("Start Test")
@@ -25,23 +25,15 @@ class RepoListViewModelSpec : Spek({
         val GET_REPOS_RESPONSE = listOf(RepoEntity(id = "1", name = "repo1"),
                 RepoEntity(id = "2", name = "repo2"))
 
-        val SEARCH_REPOS_RESPONSE =
-                listOf(RepoEntity(id = "1", name = "repo1"))
         beforeEachTest {
             viewIntentRobot = RepoListViewIntentRobot()
         }
 
-        on("refresh ") {
+        on("refresh and getRepos success") {
             viewIntentRobot.run {
-//                val stateSubscriber = viewModel.state.test()
-//                val errorSubscriber = viewModel.showError.test()
-                viewModel.state.subscribe {
-                    println("StateChange $it")
-                }.addTo(subscriptions)
                 refreshIntent.onNext(Unit)
                 getReposSubject.onNext(GET_REPOS_RESPONSE)
                 it("get correct state sequence") {
-//                    println("Value state ${stateSubscriber.values()}")
                     val expectedRepos = listOf(
                             RepoListContract.RepoItem(id = "1", name = "repo1"),
                             RepoListContract.RepoItem(id = "2", name = "repo2")
@@ -49,16 +41,13 @@ class RepoListViewModelSpec : Spek({
                     val expectedState1 = RepoListContract.State()
                     val expectedState2 = expectedState1.copy(loading = true)
                     val expectedState3 = expectedState2.copy(loading = false, repos = expectedRepos)
-
                     stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
                 }
 
                 it("not contain any error") {
                     showErrorObserver.assertEmpty()
                 }
-
             }
-
         }
 
 //        on("refresh and text search") {

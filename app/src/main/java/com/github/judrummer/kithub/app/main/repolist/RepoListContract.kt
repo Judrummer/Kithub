@@ -9,8 +9,7 @@ interface RepoListContract {
         val refreshIntent: Observable<Unit>
     }
 
-    interface ViewModel : BaseViewModel {
-        val state: Observable<State>
+    interface ViewModel : BaseViewModel<State> {
         val showError: Observable<Exception>
     }
 

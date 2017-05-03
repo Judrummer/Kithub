@@ -16,8 +16,9 @@ import com.github.judrummer.jxadapter.JxViewHolder
 import com.github.judrummer.kithub.R
 import com.github.judrummer.kithub.base.BaseFragment
 import com.github.judrummer.kithub.extension.addTo
+import com.github.judrummer.kithub.extension.parseJson
+import com.github.judrummer.kithub.extension.toJson
 
-import com.taskworld.kxandroid.logD
 import com.taskworld.kxandroid.support.v4.toast
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -62,8 +63,12 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
             toast("Error ${it.message ?: ""}")
         }.addTo(subscriptions)
 
-        refreshIntent.onNext(Unit)
 
+        if (savedInstanceState == null) {
+            refreshIntent.onNext(Unit)
+        } else {
+            viewModel.restoreState(savedInstanceState.getString(RepoListViewModel::class.java.simpleName).parseJson())
+        }
     }
 
     override fun onDestroyView() {
@@ -72,18 +77,11 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
         viewModel.detachView()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_search, menu)
-//        val searchView = MenuItemCompat.getActionView(menu.findItem(R.id.action_search)) as SearchView
-//        val searchManager = context.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//        searchView.apply {
-//            setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
-//            rx_queryTextChange(false)
-//                    .debounce(300, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidThreadScheduler.main)
-//                    .subscribe { searchIntent.onNext(it) }.addTo(subscriptions)
-//        }
-//    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putString(RepoListViewModel::class.java.simpleName, viewModel.saveState().toJson())
+    }
 
 }
 

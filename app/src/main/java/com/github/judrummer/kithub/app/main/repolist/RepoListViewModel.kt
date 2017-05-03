@@ -49,5 +49,10 @@ class RepoListViewModel(
         subscriptions.clear()
     }
 
+    override fun saveState(): RepoListContract.State = stateProps
+    override fun restoreState(state: RepoListContract.State) {
+        stateProps = state
+    }
+
 }
 

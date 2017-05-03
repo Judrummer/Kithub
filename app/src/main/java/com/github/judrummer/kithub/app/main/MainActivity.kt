@@ -14,7 +14,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
-        supportFragmentManager.transaction { add(R.id.contentContainer, RepoListFragment()) }
+        if (savedInstanceState == null) {
+            supportFragmentManager.transaction { add(R.id.contentContainer, RepoListFragment()) }
+        }
     }
 
 }
