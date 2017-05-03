@@ -15,6 +15,7 @@ import com.github.judrummer.jxadapter.JxViewHolder
 
 import com.github.judrummer.kithub.R
 import com.github.judrummer.kithub.base.BaseFragment
+import com.github.judrummer.kithub.extension.addTo
 
 import com.taskworld.kxandroid.logD
 import com.taskworld.kxandroid.support.v4.toast
@@ -22,7 +23,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import kotlinx.android.synthetic.main.item_repo.view.*
-import java.util.concurrent.TimeUnit
+
 
 class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
 
@@ -52,15 +53,14 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
             layoutManager = LinearLayoutManager(context)
             adapter = repoAdapter
         }
+        viewModel.state.subscribe { state ->
+            repoAdapter.items = state.repos
+            srlRepoList.isRefreshing = state.loading
+        }.addTo(subscriptions)
 
-//        viewModel.loading
-//                .subscribe(srlRepoList::setRefreshing)
-//                .addTo(subscriptions)
-//
-//        viewModel.error.map { "Error ${it.message ?: ""}" }
-//                .subscribe(this::toast)
-//                .addTo(subscriptions)
-
+        viewModel.showError.subscribe {
+            toast("Error ${it.message ?: ""}")
+        }.addTo(subscriptions)
 
         refreshIntent.onNext(Unit)
 
