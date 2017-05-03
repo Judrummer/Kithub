@@ -25,17 +25,10 @@ class RepoListViewModelTest {
     }
 
     @Test
-    fun refresh() {
+    fun refreshThenRenderCorrectRespose() {
         viewIntentRobot.run {
-            println("Run Test")
-            viewModel.state.subscribe {
-                println("CurrentState $it")
-            }
-            println("AfterSubscribe")
             refreshIntent.onNext(Unit)
-            println("Refresh")
             getReposSubject.onNext(GET_REPOS_RESPONSE)
-            println("APIREPO")
             val expectedRepos = listOf(
                     RepoListContract.RepoItem(id = "1", name = "repo1"),
                     RepoListContract.RepoItem(id = "2", name = "repo2")
@@ -43,11 +36,23 @@ class RepoListViewModelTest {
             val expectedState1 = RepoListContract.State()
             val expectedState2 = expectedState1.copy(loading = true)
             val expectedState3 = expectedState2.copy(loading = false, repos = expectedRepos)
-            println("Value ${stateObserver.values().size} ${stateObserver.values()}")
             stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
             showErrorObserver.assertEmpty()
         }
     }
 
+    @Test
+    fun refreshThenRenderCorrectError() {
+        viewIntentRobot.run {
+            refreshIntent.onNext(Unit)
+            val expectedError = Exception()
+            getReposSubject.onError(expectedError)
+            val expectedState1 = RepoListContract.State()
+            val expectedState2 = expectedState1.copy(loading = true)
+            val expectedState3 = expectedState2.copy(loading = false,error = expectedError)
+            stateObserver.assertValues(expectedState1, expectedState2, expectedState3)
+            showErrorObserver.assertValues(expectedError)
+        }
+    }
 
 }

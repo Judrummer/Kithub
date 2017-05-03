@@ -22,13 +22,9 @@ class RepoListViewModel(
         state.onNext(new)
     }
 
-    override val state = BehaviorSubject.create<RepoListContract.State>()
+    override val state = BehaviorSubject.createDefault<RepoListContract.State>(stateProps)
     override val showError = BehaviorSubject.create<Exception>()!!
     private val subscriptions = CompositeDisposable()
-
-    init {
-        state.onNext(stateProps)
-    }
 
     override fun attachView() {
         println("VM attachView")
