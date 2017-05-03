@@ -14,14 +14,11 @@ class RepoListViewModel(
         private val getRepos: GetRepos = GetReposImpl
 ) : RepoListContract.ViewModel {
 
-    private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, _, new ->
-        state.onNext(new)
-    }
+    private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, _, new -> state.onNext(new) }
+    private val subscriptions = CompositeDisposable()
 
     override val state = BehaviorSubject.createDefault<RepoListContract.State>(stateProps)
-
     override val showError = PublishSubject.create<Exception>()!!
-    private val subscriptions = CompositeDisposable()
 
     override fun attachView() {
         viewIntent.refreshIntent
