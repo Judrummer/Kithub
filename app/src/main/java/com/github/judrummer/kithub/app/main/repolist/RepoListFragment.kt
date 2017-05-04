@@ -14,10 +14,12 @@ import com.github.judrummer.jxadapter.JxItem
 import com.github.judrummer.jxadapter.JxViewHolder
 
 import com.github.judrummer.kithub.R
+import com.github.judrummer.kithub.app.main.repodetail.RepoDetailFragment
 import com.github.judrummer.kithub.base.BaseFragment
 import com.github.judrummer.kithub.extension.addTo
 import com.github.judrummer.kithub.extension.parseJson
 import com.github.judrummer.kithub.extension.toJson
+import com.github.judrummer.kithub.extension.transaction
 
 import com.taskworld.kxandroid.support.v4.toast
 import io.reactivex.disposables.CompositeDisposable
@@ -34,12 +36,15 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
     val subscriptions = CompositeDisposable()
     val viewModel: RepoListContract.ViewModel by lazy { RepoListViewModel(this) }
     val repoAdapter by lazy {
-        JxAdapter(JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, (id, name, description, starCount) ->
+        JxAdapter(JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, repo ->
             itemView.apply {
-                tvItemStar.text = starCount.toString()
-                tvItemName.text = name
+                tvItemStar.text = repo.starCount.toString()
+                tvItemName.text = repo.name
                 setOnClickListener {
-                    toast("Click Repo[$id] -> $name $description")
+                    val parentActivity = activity
+                    if(parentActivity is RepoListContract.Listener){
+                        parentActivity.onRepoItemClick(repo)
+                    }
                 }
             }
         })

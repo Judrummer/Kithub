@@ -3,6 +3,7 @@ package com.github.judrummer.kithub.app.main.repolist
 import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.data.usecase.*
 import com.github.judrummer.kithub.extension.*
+import com.taskworld.kxandroid.logD
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -13,6 +14,7 @@ class RepoListViewModel(
         private val viewIntent: RepoListContract.ViewIntent,
         private val getRepos: GetRepos = GetReposImpl
 ) : RepoListContract.ViewModel {
+
 
     private var stateProps: RepoListContract.State by Delegates.observable(RepoListContract.State()) { _, _, new -> state.onNext(new) }
     private val subscriptions = CompositeDisposable()

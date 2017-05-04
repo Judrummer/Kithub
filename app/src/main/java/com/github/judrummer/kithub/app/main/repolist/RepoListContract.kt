@@ -17,5 +17,9 @@ interface RepoListContract {
 
     data class RepoItem(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0) : JxItem
 
+    interface Listener {
+        fun onRepoItemClick(repo: RepoItem)
+    }
+
 }
 
