@@ -1,6 +1,7 @@
 package com.github.judrummer.kithub.data
 
 import com.github.judrummer.kithub.BuildConfig
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -20,7 +21,7 @@ fun appRetrofit(): Retrofit {
     return Retrofit.Builder()
             .baseUrl("https://api.github.com")
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.newThread()))
             .client(httpClient.build())
             .build()
 }

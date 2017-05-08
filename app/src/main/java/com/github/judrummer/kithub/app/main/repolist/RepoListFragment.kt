@@ -13,6 +13,7 @@ import com.github.judrummer.kithub.extension.addTo
 import com.github.judrummer.kithub.extension.parseJson
 import com.github.judrummer.kithub.extension.toJson
 import com.taskworld.kxandroid.support.v4.toast
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_repo_list.*
@@ -23,7 +24,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
     override val contentLayoutResourceId: Int = R.layout.fragment_repo_list
     override val refreshIntent = PublishSubject.create<Unit>()!!
 
-    val subscriptions = CompositeDisposable()
+    val disposables = CompositeDisposable()
     val viewModel: RepoListContract.ViewModel by lazy { RepoListViewModel(this, RetrofitApi<RepoApi>()) }
     val repoAdapter by lazy {
         JxAdapter(JxViewHolder<RepoListContract.RepoItem>(R.layout.item_repo) { _, repo ->
@@ -49,15 +50,15 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
             layoutManager = LinearLayoutManager(context)
             adapter = repoAdapter
         }
-        viewModel.state.subscribe { state ->
+
+        viewModel.state.observeOn(AndroidSchedulers.mainThread()).subscribe { state ->
             repoAdapter.items = state.repos
             srlRepoList.isRefreshing = state.loading
-        }.addTo(subscriptions)
+        }.addTo(disposables)
 
-        viewModel.showError.subscribe {
+        viewModel.showError.observeOn(AndroidSchedulers.mainThread()).subscribe {
             toast("Error ${it.message ?: ""}")
-        }.addTo(subscriptions)
-
+        }.addTo(disposables)
 
         if (savedInstanceState == null) {
             refreshIntent.onNext(Unit)
@@ -68,7 +69,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.ViewIntent {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        subscriptions.clear()
+        disposables.clear()
         viewModel.detachView()
     }
 
