@@ -1,7 +1,7 @@
 package com.github.judrummer.kithub.app.main.repolist
 
+import com.github.judrummer.kithub.data.api.RepoApi
 import com.github.judrummer.kithub.data.entity.RepoEntity
-import com.github.judrummer.kithub.data.usecase.*
 import com.github.judrummer.kithub.extension.*
 import com.taskworld.kxandroid.logD
 import io.reactivex.disposables.CompositeDisposable
@@ -12,7 +12,7 @@ import kotlin.properties.Delegates
 
 class RepoListViewModel(
         private val viewIntent: RepoListContract.ViewIntent,
-        private val getRepos: GetRepos = GetReposImpl
+        private val repoApi: RepoApi
 ) : RepoListContract.ViewModel {
 
 
@@ -25,7 +25,7 @@ class RepoListViewModel(
     override fun attachView() {
         viewIntent.refreshIntent
                 .switchMap {
-                    getRepos()
+                    repoApi.getRepos()
                             .map { stateProps.copy(loading = false, repos = it.map(this::mapRepoToRepoItem)) }
                             .onErrorReturn {
                                 showError.onNext(it as Exception)

@@ -25,7 +25,7 @@ class RepoListViewModelTest {
     }
 
     @Test
-    fun refreshThenRenderCorrectRespose() {
+    fun refreshThenRenderCorrectResponse() {
         viewIntentRobot.run {
             refreshIntent.onNext(Unit)
             getReposSubject.onNext(GET_REPOS_RESPONSE)

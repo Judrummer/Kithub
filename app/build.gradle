@@ -44,10 +44,14 @@ dependencies {
             "com.github.verachadw:kreference:0.7.0",
             'com.google.code.gson:gson:2.4',
             "com.github.kittinunf.result:result:1.0.2",
-            "com.github.kittinunf.fuel:fuel-android:$fuelVersion",
             "com.github.judrummer.jxadapter:jxadapter:$jxAdapterVersion",
             "io.reactivex.rxjava2:rxjava:2.0.9",
-            'io.reactivex.rxjava2:rxandroid:2.0.1'
+            'io.reactivex.rxjava2:rxandroid:2.0.1',
+            "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+            "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion",
+            "com.squareup.okhttp3:okhttp:$okhttpVersion",
+            "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     )
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -57,8 +61,6 @@ dependencies {
             "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
             "com.nhaarman:mockito-kotlin:0.3.1",
             "com.natpryce:hamkrest:1.2.3.0",
-            "org.jetbrains.spek:spek-api:$spekVersion",
-            "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion",
             "org.junit.platform:junit-platform-runner:$junitRunnerVersion"
     )
 
