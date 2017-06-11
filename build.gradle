@@ -26,6 +26,7 @@ allprojects {
         junitRunnerVersion = "1.0.0-M3"
         retrofitVersion = "2.2.0"
         okhttpVersion = "3.7.0"
+        realmVersion ="3.3.1"
 
     }
     repositories {

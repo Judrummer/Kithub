@@ -9,6 +9,7 @@ import com.github.judrummer.jxadapter.JxViewHolder
 import com.github.judrummer.kithub.R
 import com.github.judrummer.kithub.extension.addTo
 import com.github.judrummer.kithub.ui.base.BaseFragment
+import com.taskworld.kxandroid.support.v4.toast
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import kotlinx.android.synthetic.main.item_repo.view.*
 
@@ -58,6 +59,16 @@ class RepoListFragment : BaseFragment() {
                 srlRepoList.isEnabled = true
                 pbRepoList.visibility = View.GONE
             }
+            if (state.error != null) {
+                tvRepoListError.visibility = View.VISIBLE
+                tvRepoListError.text = state.error
+            } else {
+                tvRepoListError.visibility = View.GONE
+            }
+        }.addTo(disposables)
+
+        viewModel.showErrorDialog.subscribe { error ->
+            toast(error)
         }.addTo(disposables)
 
         if (savedInstanceState == null) viewIntent.fetch.onNext(Unit)
