@@ -37,6 +37,8 @@ dependencies {
             "com.android.support:cardview-v7:$supportVersion",
             "com.android.support:recyclerview-v7:$supportVersion",
             "com.github.taskworld.kxandroid:kxandroid:$kxandroidVersion",
+            "android.arch.lifecycle:runtime:$archVersion",
+            "android.arch.lifecycle:extensions:$archVersion",
             "com.github.taskworld.kxandroid:kxandroid-support-v4:$kxandroidVersion",
             "com.github.taskworld.kxandroid:kxandroid-support-v7-appcompat:$kxandroidVersion",
             "com.github.taskworld.kxandroid:kxandroid-support-design:$kxandroidVersion",
