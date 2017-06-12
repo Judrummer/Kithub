@@ -11,11 +11,11 @@ import io.realm.annotations.RealmClass
 
 @RealmClass
 open class RepoEntity(
-        @PrimaryKey open var id: String = "",
-        open var name: String = "",
-        open var description: String? = "",
-        open var language: String = "",
-        open var owner: OwnerEntity = OwnerEntity(),
+        @PrimaryKey @SerializedName("id") open var id: String = "",
+        @SerializedName("name") open var name: String = "",
+        @SerializedName("description") open var description: String? = "",
+        @SerializedName("language") open var language: String = "",
+        @SerializedName("owner") open var owner: OwnerEntity = OwnerEntity(),
         @SerializedName("git_url") open var gitUrl: String = "",
         @SerializedName("ssh_url") open var sshUrl: String = "",
         @SerializedName("full_name") open var fullName: String = "",

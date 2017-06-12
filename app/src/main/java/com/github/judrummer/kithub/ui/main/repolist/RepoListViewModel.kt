@@ -7,7 +7,6 @@ import com.github.judrummer.kithub.data.repository.RepoRepository
 import com.github.judrummer.kithub.data.repository.RepoRepositoryImpl
 import com.github.judrummer.kithub.extension.addTo
 import com.github.judrummer.kithub.ui.base.BaseViewModel
-import com.taskworld.kxandroid.logD
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -40,7 +39,6 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
                 is Action.ReposRefreshing -> state.value.copy(refreshing = true, error = null)
                 is Action.ReposResponse -> {
                     if (action.apiStatus is ApiStatus.Error) {
-                        logD("APiError ${action.apiStatus.error}")
                         showErrorDialog.onNext(action.apiStatus.error)
                     }
                     state.value.copy(fetching = false, refreshing = false, repos = action.repos, error = null)
@@ -52,7 +50,6 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
     init {
         Observable.merge(viewIntent.fetch.map { true }, viewIntent.refresh.map { false })
                 .switchMap { isFetch ->
-                    logD(isFetch)
                     repoRepository.getRepos()
                             .map { result ->
                                 when (result.apiStatus) {

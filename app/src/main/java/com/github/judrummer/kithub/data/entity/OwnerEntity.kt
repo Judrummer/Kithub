@@ -11,7 +11,7 @@ import io.realm.annotations.RealmClass
 
 @RealmClass
 open class OwnerEntity(
-        @PrimaryKey open var id: String = "",
-        open var login: String = "",
+        @SerializedName("id") @PrimaryKey open var id: String = "",
+        @SerializedName("login") open var login: String = "",
         @SerializedName("avatar_url") var avatarUrl: String = ""
 ) : RealmModel
