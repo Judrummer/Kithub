@@ -1,15 +1,14 @@
-package com.github.judrummer.kithub.app.main
+package com.github.judrummer.kithub.ui.main
 
 import android.os.Bundle
 import com.github.judrummer.kithub.R
-
-import com.github.judrummer.kithub.base.BaseActivity
 import com.github.judrummer.kithub.extension.transaction
+import com.github.judrummer.kithub.ui.base.BaseActivity
+import com.github.judrummer.kithub.ui.main.repodetail.RepoDetailFragment
 import com.github.judrummer.kithub.ui.main.repolist.RepoListFragment
-import com.taskworld.kxandroid.logD
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), RepoListFragment.Listener {
 
     override val contentLayoutResourceId: Int = R.layout.activity_main
 
@@ -22,11 +21,11 @@ class MainActivity : BaseActivity() {
         }
     }
 
-//    override fun onRepoItemClick(repo: RepoListContract.RepoItem) {
-//        supportFragmentManager.transaction {
-//            add(R.id.contentContainer, RepoDetailFragment.instance(repo))
-//            addToBackStack(null)
-//        }
-//    }
+    override fun onRepoItemClick(id: String) {
+        supportFragmentManager.transaction {
+            add(R.id.contentContainer, RepoDetailFragment.instance(id))
+            addToBackStack(null)
+        }
+    }
 
 }

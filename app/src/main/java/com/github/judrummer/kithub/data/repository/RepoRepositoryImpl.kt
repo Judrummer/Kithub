@@ -21,7 +21,7 @@ class RepoRepositoryImpl(val repoApi: RepoApi = RetrofitApi<RepoApi>(),
                          val repoDb: RepoDb = RepoDbImpl()) : RepoRepository {
 
     override fun getRepos(): Observable<RepositoryResult<List<RepoEntity>>> {
-        val repoApiStatus = repoApi.getRepos().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        val repoApiStatus = repoApi.getRepos()
                 .doOnNext { repoDb.saveRepos(it) }
                 .map { ApiStatus.Success as ApiStatus }
                 .onErrorReturn { ApiStatus.Error(it) }
@@ -31,7 +31,12 @@ class RepoRepositoryImpl(val repoApi: RepoApi = RetrofitApi<RepoApi>(),
                 is ApiStatus.Success -> RepositoryResult(repoDb.getRepos().blockingFirst(), apiStatus)
                 else -> RepositoryResult(db, apiStatus)
             }
-        }
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
+
+    override fun getRepo(id: String): Observable<RepoEntity> = repoDb.getRepo(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 
 }

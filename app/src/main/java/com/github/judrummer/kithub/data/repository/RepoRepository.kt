@@ -9,4 +9,5 @@ import io.reactivex.Observable
  */
 interface RepoRepository {
     fun getRepos(): Observable<RepositoryResult<List<RepoEntity>>>
+    fun getRepo(id: String): Observable<RepoEntity>
 }

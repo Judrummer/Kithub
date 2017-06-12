@@ -1,13 +1,10 @@
-package com.github.judrummer.kithub.base
+package com.github.judrummer.kithub.ui.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
 
 
 abstract class BaseActivity : AppCompatActivity() {
-
 
     abstract val contentLayoutResourceId: Int
 
@@ -17,4 +14,5 @@ abstract class BaseActivity : AppCompatActivity() {
             setContentView(contentLayoutResourceId)
         }
     }
+
 }

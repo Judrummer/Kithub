@@ -10,4 +10,5 @@ import io.reactivex.Observable
 interface RepoDb {
     fun saveRepos(repos: List<RepoEntity>)
     fun getRepos(): Observable<List<RepoEntity>>
+    fun getRepo(id: String): Observable<RepoEntity>
 }

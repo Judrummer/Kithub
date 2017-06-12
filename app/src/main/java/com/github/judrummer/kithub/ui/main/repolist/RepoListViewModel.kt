@@ -19,7 +19,7 @@ import io.reactivex.subjects.PublishSubject
 data class RepoListState(val fetching: Boolean = false,
                          val refreshing: Boolean = false,
                          val repos: List<RepoItem> = listOf(),
-                         val error: String? = null)
+                         val error: Throwable? = null)
 
 data class RepoItem(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0) : JxItem
 
@@ -31,7 +31,7 @@ class RepoListViewIntent {
 class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl()) : BaseViewModel() {
 
     val state: BehaviorSubject<RepoListState> = BehaviorSubject.createDefault(RepoListState())!!
-    val showErrorDialog = PublishSubject.create<String>()!!
+    val showErrorDialog = PublishSubject.create<Throwable>()!!
     val viewIntent = RepoListViewIntent()
 
     private fun reducer(action: Action): RepoListState =
@@ -39,10 +39,10 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
                 is Action.ReposFetching -> state.value.copy(fetching = true, error = null)
                 is Action.ReposRefreshing -> state.value.copy(refreshing = true, error = null)
                 is Action.ReposResponse -> {
-                    if (action.apiStatus is ApiStatus.Error) showErrorDialog.onNext(action.apiStatus.error.message)
+                    if (action.apiStatus is ApiStatus.Error) showErrorDialog.onNext(action.apiStatus.error)
                     state.value.copy(fetching = false, refreshing = false, repos = action.repos, error = null)
                 }
-                is Action.ReposError -> state.value.copy(fetching = false, refreshing = false, repos = listOf(), error = action.error.message)
+                is Action.ReposError -> state.value.copy(fetching = false, refreshing = false, repos = listOf(), error = action.error)
                 else -> state.value
             }
 
@@ -67,7 +67,6 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
             repo.stargazers_count)
 
     private sealed class Action {
-
         object ReposRefreshing : Action()
         object ReposFetching : Action()
         class ReposResponse(val repos: List<RepoItem>, val apiStatus: ApiStatus) : Action()

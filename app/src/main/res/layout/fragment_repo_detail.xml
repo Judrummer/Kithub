@@ -18,6 +18,7 @@
         android:id="@+id/tvRepoStar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_github_search_star"
         android:drawableRight="@drawable/ic_github_search_star"
         android:padding="8dp"
         tools:text="15" />
