@@ -1,5 +1,6 @@
 package com.github.judrummer.kithub.data.entity
 
+import com.google.gson.annotations.SerializedName
 import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
@@ -13,5 +14,5 @@ open class RepoEntity(
         @PrimaryKey open var id: String = "",
         open var name: String = "",
         open var description: String? = "",
-        open var full_name: String = "",
-        open var stargazers_count: Int = 0) : RealmModel
+        @SerializedName("full_name") open var fullName: String = "",
+        @SerializedName("stargazers_count") open var stargazersCount: Int = 0) : RealmModel

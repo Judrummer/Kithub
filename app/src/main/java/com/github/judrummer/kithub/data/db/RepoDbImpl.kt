@@ -29,7 +29,7 @@ class RepoDbImpl : RepoDb {
     override fun getRepo(id: String): Observable<RepoEntity> {
         var repo: RepoEntity? = null
         Realm.getDefaultInstance().use { realm ->
-            repo = realm.where(RepoEntity::class.java).equalTo("id", id).findFirst()
+            repo = realm.copyFromRealm(realm.where(RepoEntity::class.java).equalTo("id", id).findFirst())
         }
         return if (repo != null) Observable.just(repo) else Observable.error(NullPointerException("Not found id $id"))
     }

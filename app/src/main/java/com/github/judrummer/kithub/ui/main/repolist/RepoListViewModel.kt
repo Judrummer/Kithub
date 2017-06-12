@@ -64,7 +64,7 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
     private fun mapRepoToRepoItem(repo: RepoEntity) = RepoItem(repo.id,
             repo.name,
             repo.description ?: "",
-            repo.stargazers_count)
+            repo.stargazersCount)
 
     private sealed class Action {
         object ReposRefreshing : Action()

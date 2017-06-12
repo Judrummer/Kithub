@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.TextView
 import com.github.judrummer.jxadapter.JxAdapter
 import com.github.judrummer.jxadapter.JxViewHolder
 import com.github.judrummer.kithub.R
 import com.github.judrummer.kithub.extension.addTo
-import com.github.judrummer.kithub.extension.errorMessageResId
+import com.github.judrummer.kithub.extension.errorMessage
 import com.github.judrummer.kithub.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import kotlinx.android.synthetic.main.item_repo.view.*
@@ -66,14 +67,15 @@ class RepoListFragment : BaseFragment() {
             }
             if (state.error != null) {
                 tvRepoListError.visibility = View.VISIBLE
-                tvRepoListError.setText(state.error.errorMessageResId(context))
+                tvRepoListError.text = state.error.errorMessage(context)
             } else {
                 tvRepoListError.visibility = View.GONE
             }
         }.addTo(disposables)
 
         viewModel.showErrorDialog.subscribe { error ->
-            Snackbar.make(rootView, error.errorMessageResId(context), Snackbar.LENGTH_SHORT).apply {
+            Snackbar.make(rootView, error.errorMessage(context), Snackbar.LENGTH_SHORT).apply {
+                (this.view.findViewById(android.support.design.R.id.snackbar_text) as TextView).maxLines = 3
                 setAction(R.string.snackbar_action_dismiss) { this.dismiss() }
             }.show()
         }.addTo(disposables)

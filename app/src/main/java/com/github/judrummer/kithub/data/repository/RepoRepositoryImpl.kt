@@ -21,7 +21,8 @@ class RepoRepositoryImpl(val repoApi: RepoApi = RetrofitApi<RepoApi>(),
                          val repoDb: RepoDb = RepoDbImpl()) : RepoRepository {
 
     override fun getRepos(): Observable<RepositoryResult<List<RepoEntity>>> {
-        val repoApiStatus = repoApi.getRepos()
+        val repoApiStatus = repoApi.searchRepos("kotlin", 1, 50)  //TODO: handle pagination
+                .map { it.items }
                 .doOnNext { repoDb.saveRepos(it) }
                 .map { ApiStatus.Success as ApiStatus }
                 .onErrorReturn { ApiStatus.Error(it) }
