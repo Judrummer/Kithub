@@ -8,7 +8,6 @@ import com.github.judrummer.kithub.data.db.RepoDbImpl
 import com.github.judrummer.kithub.data.entity.RepoEntity
 import com.github.judrummer.kithub.data.entity.RepositoryResult
 import com.github.judrummer.kithub.extension.kx_combineLatest
-import com.taskworld.kxandroid.logD
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
