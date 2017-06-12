@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <LinearLayout
-        android:id="@+id/llRepoDetail"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:id="@+id/llRepoDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvRepoOwnerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                tools:text="testuser" />
+
+            <ImageView
+                android:id="@+id/ivRepoAvatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp" />
+
+            <TextView
+                android:id="@+id/tvRepoName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                tools:text="RxAndroid" />
+
+            <TextView
+                android:id="@+id/tvRepoStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_github_search_star"
+                android:drawableRight="@drawable/ic_github_search_star"
+                android:padding="8dp"
+                tools:text="15" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvRepoName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="8dp"
-            tools:text="RxAndroid" />
-
-        <TextView
-            android:id="@+id/tvRepoStar"
+            android:id="@+id/tvRepoDetailError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_github_search_star"
-            android:drawableRight="@drawable/ic_github_search_star"
-            android:padding="8dp"
-            tools:text="15" />
+            android:layout_gravity="center"
+            tools:text="@string/throwable_error_unknown_host" />
 
-    </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pbRepoDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</ScrollView>
 
-    <TextView
-        android:id="@+id/tvRepoDetailError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        tools:text="@string/throwable_error_unknown_host" />
-
-    <ProgressBar
-        android:id="@+id/pbRepoDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-</FrameLayout>

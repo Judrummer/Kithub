@@ -4,11 +4,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
 import com.github.judrummer.kithub.R
-import com.github.judrummer.kithub.extension.addTo
-import com.github.judrummer.kithub.extension.errorMessage
+import com.github.judrummer.kithub.extension.*
 import com.github.judrummer.kithub.ui.base.BaseFragment
-import com.github.judrummer.kithub.extension.parseJson
-import com.github.judrummer.kithub.extension.toJson
 import kotlinx.android.synthetic.main.fragment_repo_detail.*
 
 /**
@@ -34,6 +31,8 @@ class RepoDetailFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.state.subscribe { state ->
             with(state.repo) {
+                tvRepoOwnerName.text = ownerName
+                ivRepoAvatar.setCircleAvatarImageUrl(avatarUrl)
                 tvRepoName.text = name
                 tvRepoStar.text = starCount.toString()
             }

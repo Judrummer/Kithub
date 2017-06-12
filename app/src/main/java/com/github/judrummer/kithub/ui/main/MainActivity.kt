@@ -22,7 +22,7 @@ class MainActivity : BaseActivity(), RepoListFragment.Listener {
     }
 
     override fun onRepoItemClick(id: String) {
-        supportFragmentManager.transaction {
+        supportFragmentManager.transaction{
             add(R.id.contentContainer, RepoDetailFragment.instance(id))
             addToBackStack(null)
         }

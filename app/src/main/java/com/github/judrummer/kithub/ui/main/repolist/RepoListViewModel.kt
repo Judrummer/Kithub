@@ -39,7 +39,10 @@ class RepoListViewModel(val repoRepository: RepoRepository = RepoRepositoryImpl(
                 is Action.ReposFetching -> state.value.copy(fetching = true, error = null)
                 is Action.ReposRefreshing -> state.value.copy(refreshing = true, error = null)
                 is Action.ReposResponse -> {
-                    if (action.apiStatus is ApiStatus.Error) showErrorDialog.onNext(action.apiStatus.error)
+                    if (action.apiStatus is ApiStatus.Error) {
+                        logD("APiError ${action.apiStatus.error}")
+                        showErrorDialog.onNext(action.apiStatus.error)
+                    }
                     state.value.copy(fetching = false, refreshing = false, repos = action.repos, error = null)
                 }
                 is Action.ReposError -> state.value.copy(fetching = false, refreshing = false, repos = listOf(), error = action.error)

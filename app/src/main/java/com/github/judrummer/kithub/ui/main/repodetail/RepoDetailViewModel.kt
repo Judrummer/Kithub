@@ -14,7 +14,7 @@ import io.reactivex.subjects.PublishSubject
 
 data class RepoDetailState(val repo: RepoDetail = RepoDetail(), val error: Throwable? = null, val fetching: Boolean = false)
 
-data class RepoDetail(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0)
+data class RepoDetail(val id: String = "", val name: String = "", val description: String = "", val starCount: Int = 0, val ownerName: String = "", val avatarUrl: String = "")
 
 class RepoDetailViewIntent {
     val repoId = PublishSubject.create<String>()
@@ -28,7 +28,7 @@ class RepoDetailViewModel(val repoRepository: RepoRepository = RepoRepositoryImp
     init {
         viewIntent.repoId.switchMap {
             repoRepository.getRepo(it)
-                    .map { Action.RepoResponse(RepoDetail(id = it.id, name = it.name, description = it.description ?: "", starCount = it.stargazersCount)) as Action }
+                    .map { Action.RepoResponse(RepoDetail(id = it.id, name = it.name, description = it.description ?: "", starCount = it.stargazersCount, ownerName = it.owner.login, avatarUrl = it.owner.avatarUrl)) as Action }
                     .onErrorReturn { Action.RepoError(it) }
                     .startWith(Action.RepoFetching)
         }.map(this::reducer).subscribe(state::onNext).addTo(disposables)

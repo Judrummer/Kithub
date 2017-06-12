@@ -9,4 +9,3 @@ fun FragmentManager.transaction(transactionBlock: (FragmentTransaction).() -> (U
     transaction.commit()
 }
 
-
